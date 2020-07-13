@@ -3,6 +3,7 @@ package space.kasured.coursera;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -16,13 +17,11 @@ public class KruskalsMst extends Mst {
 
     private static final Logger logger = LoggerFactory.getLogger(KruskalsMst.class);
 
-    private static final Comparator<Edge> edgeComparator = Comparator.comparing(edge -> edge.weight);
-
-    protected KruskalsMst() {
+    protected KruskalsMst() throws IOException {
         super(KruskalsMst::calculateMstNodes);
     }
 
-    private static long calculateMstNodes(Mst.Graph otherGraph) {
+    private static long calculateMstNodes(GraphSuite.Graph otherGraph) {
 
         final Graph graph = Graph.from(otherGraph);
 
@@ -31,10 +30,10 @@ public class KruskalsMst extends Mst {
         logger.debug("Sorted list of edges {}", graph.edges);
 
         // upper bound on the number of edges
-        final List<Edge> mst = new ArrayList<>(graph.edges.size());
+        final List<GraphSuite.Edge> mst = new ArrayList<>(graph.edges.size());
         final UnionFindKruskal unionFind = new UnionFindKruskal(graph);
 
-        for (Edge edge : graph.edges) {
+        for (GraphSuite.Edge edge : graph.edges) {
             // check if the edge forms the cycle when added to MST
             // if not then add to the mst otherwise just skip
             logger.debug("processing edge {}", edge);
@@ -49,7 +48,7 @@ public class KruskalsMst extends Mst {
         return mst.stream().mapToLong(edge -> edge.weight).sum();
     }
 
-    private static void updateStructure(Edge edge, Graph graph, UnionFindKruskal unionFind) {
+    private static void updateStructure(GraphSuite.Edge edge, Graph graph, UnionFindKruskal unionFind) {
 
         final Node from = graph.getNodeById(edge.from);
         final Node to = graph.getNodeById(edge.to);
@@ -57,7 +56,7 @@ public class KruskalsMst extends Mst {
         unionFind.union(from, to);
     }
 
-    private static boolean formsCycle(Edge edge, Graph graph, UnionFindKruskal unionFind) {
+    private static boolean formsCycle(GraphSuite.Edge edge, Graph graph, UnionFindKruskal unionFind) {
 
         final Node from = graph.getNodeById(edge.from);
         final Node to = graph.getNodeById(edge.to);
@@ -82,12 +81,12 @@ public class KruskalsMst extends Mst {
 
     static class Graph {
         final List<Node> nodes;
-        final List<Mst.Edge> edges;
-        private final Mst.Graph generalGraph;
+        final List<GraphSuite.Edge> edges;
+        private final GraphSuite.Graph generalGraph;
 
         final Map<Integer, Node> idToNode;
 
-        private Graph(Mst.Graph generalGraph) {
+        private Graph(GraphSuite.Graph generalGraph) {
             this.nodes = generalGraph.nodes.stream().map(gNode -> {
                 Node n = new Node();
                 n.nodeId = gNode.id;
@@ -101,11 +100,11 @@ public class KruskalsMst extends Mst {
             this.generalGraph = generalGraph;
         }
 
-        private Node getNodeById(int id) {
+        Node getNodeById(int id) {
             return idToNode.get(id);
         }
 
-        static Graph from(Mst.Graph graph) {
+        static Graph from(GraphSuite.Graph graph) {
             return new Graph(graph);
         }
     }
@@ -117,6 +116,10 @@ public class KruskalsMst extends Mst {
         public UnionFindKruskal(Graph graph) {
             // init the union find with the nodes
             this.groups = graph.nodes.stream().collect(Collectors.groupingBy(node -> new Group(node.leaderId)));
+        }
+
+        public int numOfGroups() {
+            return groups.keySet().size();
         }
 
         @Override

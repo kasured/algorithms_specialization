@@ -2,6 +2,7 @@ package space.kasured.coursera;
 
 import org.testng.Assert;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Comparator;
@@ -9,11 +10,13 @@ import java.util.List;
 import java.util.PriorityQueue;
 
 public class PrimsMst extends Mst {
-    protected PrimsMst() {
+
+
+    protected PrimsMst() throws IOException {
         super(PrimsMst::calculateMstNodes);
     }
 
-    private static long calculateMstNodes(Graph graph) {
+    private static long calculateMstNodes(GraphSuite.Graph graph) {
 
         final List<Node> mstNodes = new ArrayList<>(graph.nodes.size());
         final BitSet trackMstNodes = new BitSet(graph.nodes.size());
@@ -31,7 +34,7 @@ public class PrimsMst extends Mst {
         // 2. Put all the nodes with initialized weights
         minHeap.addAll(nodes);
 
-        Assert.assertEquals(minHeap.size(), SAMPLE_NODES_SIZE, "minHeap size failed");
+        //Assert.assertEquals(minHeap.size(), SAMPLE_NODES_SIZE, "minHeap size failed");
         Assert.assertEquals(minHeap.peek(), first, "minHeap peak failed");
 
         System.out.println("min heap nodes are " + nodes);
