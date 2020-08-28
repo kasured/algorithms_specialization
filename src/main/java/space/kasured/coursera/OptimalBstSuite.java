@@ -20,7 +20,8 @@ public class OptimalBstSuite {
                 { new TestCase(new double[] {0.4d, 0.08d}, 0.56d) },
                 { new TestCase(new double[] {0.05d, 0.08d}, 0.18d) },
                 { new TestCase(new double[] {0.05d, 0.4d, 0.08d}, 0.66d) },
-                { new TestCase(new double[] {0.05d, 0.4d, 0.08d, 0.04d, 0.1d, 0.1d, 0.23d}, 2.18d) }
+                { new TestCase(new double[] {0.05d, 0.4d, 0.08d, 0.04d, 0.1d, 0.1d, 0.23d}, 2.18d) },
+                { new TestCase(new double[] {0.2d, 0.05d, 0.17d, 0.1d, 0.2d, 0.03d, 0.25d}, 2.23d) }
         };
     }
 
